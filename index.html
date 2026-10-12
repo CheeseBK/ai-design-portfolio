@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ran Chen — AI for Interdisciplinary Design Portfolio</title>
+  <meta name="description" content="Design portfolio by Ran Chen: the −0 album cover and the PUNK RADIO 3D environment, with an interactive homepage where every click plants a flower that plays a note.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="home" href="index.html" aria-current="page">Ran Chen</a>
+    <ul>
+      <li><a href="cover.html">−0</a></li>
+      <li><a href="studio.html">Punk Radio</a></li>
+    </ul>
+  </header>
+
+  <main>
+    <section class="wrap intro">
+      <h1>AI for Interdisciplinary Design Portfolio</h1>
+      <p class="name">Ran Chen</p>
+    </section>
+
+    <section class="wrap" aria-label="Interactive drawing area">
+      <div class="field">
+        <canvas tabindex="0" aria-label="Drawing area. Click or tap to plant a flower that plays a note. Press Enter to plant one with the keyboard."></canvas>
+        <p class="hint">Click to plant a note<span>Height = pitch · shape = tone</span></p>
+        <div class="count" aria-live="polite">000 / NOTES</div>
+        <button class="sound" type="button" aria-pressed="true"><i></i><span>Sound on</span></button>
+      </div>
+    </section>
+
+    <section class="wrap projects" aria-label="Projects">
+      <a class="card" href="cover.html">
+        <div class="thumb square"><img src="assets/cover/cover-card.webp" alt="The −0 album cover: 157 blue-white bars cut into cells, mirrored around a thin horizontal line of light." width="900" height="900"></div>
+        <div class="meta">
+          <h2>−0</h2>
+          <span class="arrow">Album cover →</span>
+        </div>
+        <p>A cover for my own techno track, drawn by the track: 157 bars of music become 157 bars of light.</p>
+      </a>
+      <a class="card" href="studio.html">
+        <div class="thumb"><img src="assets/studio/studio-card.webp" alt="Rendered Blender view of the PUNK RADIO control room: console, equipment racks and the observation window under an ON AIR light." width="900" height="519"></div>
+        <div class="meta">
+          <h2>Punk Radio</h2>
+          <span class="arrow">3D environment →</span>
+        </div>
+        <p>An underground pirate radio station in the basement of a closed-down coin laundry, built in Blender.</p>
+      </a>
+    </section>
+  </main>
+
+  <footer class="wrap site">
+    <span>Ran Chen · DSC 494 · Fall 2026</span>
+    <a href="mailto:chenran0109@gmail.com">chenran0109@gmail.com</a>
+  </footer>
+
+  <script src="site.js"></script>
+</body>
+</html>

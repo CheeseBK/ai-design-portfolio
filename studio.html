@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Punk Radio — 3D Environment · Ran Chen</title>
+  <meta name="description" content="PUNK RADIO: an underground pirate radio station in the basement of a closed-down coin laundry, designed from an AI concept reference and built in Blender.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="home" href="index.html">Ran Chen</a>
+    <ul>
+      <li><a href="cover.html">−0</a></li>
+      <li><a href="studio.html" aria-current="page">Punk Radio</a></li>
+    </ul>
+  </header>
+
+  <main class="wrap">
+    <section class="p-head">
+      <div class="kicker">Project 02 · 3D environment</div>
+      <h1>Punk Radio</h1>
+      <p class="sub">An underground pirate radio station in the basement of a closed-down coin laundry.</p>
+    </section>
+
+    <figure class="hero-wide">
+      <img src="assets/studio/final-a.webp" alt="Final Blender render from the foot of the stairs: the console between two equipment racks with light strips, the observation window under an ON AIR light, a magenta strip along the ceiling ridge." width="1600" height="922">
+      <figcaption><b>Final scene, camera A.</b> From the foot of the stairs. ON AIR above the window; the magenta ridge strip marks where the room changes from the quiet zone to the zone where sound is made.</figcaption>
+    </figure>
+
+    <dl class="facts">
+      <div><dt>Space</dt><dd>8.0 × 6.5 m · 52 m² · 2.6 m original ceiling</dd></div>
+      <div><dt>Programme</dt><dd>Live broadcast, live sets, equipment repair</dd></div>
+      <div><dt>Tools</dt><dd>AI image generation for the concept reference; Blender for the scene</dd></div>
+      <div><dt>Context</dt><dd>DSC 494 · Weeks 03–04 · Fall 2026 class project</dd></div>
+    </dl>
+
+    <p class="lede">I chose a broadcast station over a recording studio because on air there is no second take. The design grows from one thing I see at work as an assistant engineer at ASU Fusion Studio: a player in an isolation booth has no window to catch the engineer’s eye.</p>
+
+    <section class="sec">
+      <div class="sec-h"><span class="n">01</span><h2>The final scene</h2></div>
+      <p>Materials and lighting went on only after the layout was approved. Every emissive light marks something: broadcast state, a signal path, or a working position.</p>
+      <div class="grid g2">
+        <figure><img src="assets/studio/final-b.webp" alt="Top-down render: the performance area lit blue-cyan above the partition, the control zone lit dark red below." width="1600" height="922" loading="lazy"><figcaption><b>Camera B, top-down.</b> The quiet and loud zones became colour: blue-cyan north, dark red south, with the partition as the boundary.</figcaption></figure>
+        <figure><img src="assets/studio/final-c.webp" alt="Render through the observation window toward the drum kit in blue light." width="1600" height="922" loading="lazy"><figcaption><b>Camera C, through the window.</b> The engineer’s actual field of view into the performance area.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><span class="n">02</span><h2>Concept reference</h2></div>
+      <p>The concept image was generated first and corrected one change at a time. The first edit deleted the cable channel instead of moving it. The second edit had to say twice that the channel must be visible.</p>
+      <div class="compare">
+        <img src="assets/studio/reference-00.webp" alt="First generated concept image of the radio station." width="1600" height="900">
+        <div class="after"><img src="assets/studio/reference-02.webp" alt="Approved concept image after two edits, with the cable channel along the wall base." width="1600" height="900"></div>
+        <div class="bar"></div>
+        <span class="l b">Original</span><span class="l a">Edit 02</span>
+        <input type="range" min="0" max="100" value="50" aria-label="Drag to compare the original concept image with the approved edit">
+      </div>
+      <figcaption><b>Drag to compare.</b> Edit 02 is the approved studio reference. The cable channel now runs along the wall base instead of across the walking route, and the booth indicator no longer reads as a level meter.</figcaption>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><span class="n">03</span><h2>Plan and section</h2></div>
+      <p>A perspective image cannot describe a whole room. The sloped ceiling failed twice in perspective and resolved in one attempt in section, at 2.4 m over the loud zone and 2.15 m over the quiet one.</p>
+      <div class="grid g2">
+        <figure><div class="plate"><img src="assets/studio/floor-plan.svg" alt="Orthographic floor plan of the 8.0 by 6.5 m room with partition, window, booth, cable channels and side corridor." width="1600" height="1300" loading="lazy"></div><figcaption><b>Floor plan.</b> The partition divides control from performance; a 1.1 m side corridor lets performers change over without passing the console.</figcaption></figure>
+        <figure><div class="plate"><img src="assets/studio/section-a-a.svg" alt="Section A-A showing the asymmetric sloped ceiling, ductwork, floating floor step and partition." width="1600" height="1200" loading="lazy"></div><figcaption><b>Section A-A.</b> The asymmetric ceiling, ductwork in the low void, the floating-floor step and the partition running to the slab.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><span class="n">04</span><h2>Three review rounds</h2></div>
+      <p>The same three cameras in every round, so only one thing changes at a time. Three of the eleven revisions came from Round 1, before any furniture existed to hide them.</p>
+      <div class="review">
+        <div class="colhead"><div></div><div class="cells"><div>A · Stairs</div><div>B · Top-down</div><div>C · Window</div></div></div>
+        <div class="row">
+          <div class="rlabel">Round 1<span>Shell only, review lighting</span></div>
+          <div class="cells">
+            <img src="assets/studio/round1-a.webp" alt="Round 1, camera A: empty shell with window opening." loading="lazy">
+            <img src="assets/studio/round1-b.webp" alt="Round 1, camera B: top-down shell with partition." loading="lazy">
+            <img src="assets/studio/round1-c.webp" alt="Round 1, camera C: view through the window opening, empty." loading="lazy">
+          </div>
+        </div>
+        <div class="row">
+          <div class="rlabel">Round 2<span>Furniture added</span></div>
+          <div class="cells">
+            <img src="assets/studio/round2-a.webp" alt="Round 2, camera A: console and racks added, grey review lighting." loading="lazy">
+            <img src="assets/studio/round2-b.webp" alt="Round 2, camera B: top-down with furniture." loading="lazy">
+            <img src="assets/studio/round2-c.webp" alt="Round 2, camera C: drum kit seen through the window." loading="lazy">
+          </div>
+        </div>
+        <div class="row">
+          <div class="rlabel">Round 3<span>Materials and scene light</span></div>
+          <div class="cells">
+            <img src="assets/studio/final-a.webp" alt="Round 3, camera A: final lighting." loading="lazy">
+            <img src="assets/studio/final-b.webp" alt="Round 3, camera B: final lighting top-down." loading="lazy">
+            <img src="assets/studio/final-c.webp" alt="Round 3, camera C: final lighting through the window." loading="lazy">
+          </div>
+        </div>
+      </div>
+      <p class="note">This project stopped at still-image review, so no camera walkthrough was rendered.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-h"><span class="n">05</span><h2>Reflection</h2></div>
+      <blockquote class="reflect">The worst revisions all had the same shape: every instruction was executed correctly and the result was still wrong, because the thing that mattered was never stated. Knowing the domain made me faster at designing and worse at specifying.</blockquote>
+    </section>
+
+    <nav class="next" aria-label="Project navigation">
+      <a class="back" href="index.html">← Home</a>
+      <a class="big" href="cover.html">Next: −0 →</a>
+    </nav>
+  </main>
+
+  <script src="site.js"></script>
+</body>
+</html>

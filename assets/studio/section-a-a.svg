@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <style>
+    .wall{fill:#fff;stroke:#000;stroke-width:9;stroke-linejoin:miter}.heavy{fill:none;stroke:#000;stroke-width:6}.line{fill:none;stroke:#000;stroke-width:3}.thin{fill:none;stroke:#000;stroke-width:2}.dash{fill:none;stroke:#000;stroke-width:2;stroke-dasharray:10 7}.fill{fill:#f4f4f4;stroke:#000;stroke-width:3}.label{font:22px Arial,sans-serif;letter-spacing:1px}.small{font:16px Arial,sans-serif;letter-spacing:.4px}.tiny{font:13px Arial,sans-serif}.title{font:bold 30px Arial,sans-serif;letter-spacing:2px}
+  </style>
+  <rect width="1600" height="1200" fill="white"/>
+  <text x="790" y="65" text-anchor="middle" class="title">SECTION A–A — UNDERGROUND PIRATE RADIO STATION</text>
+  <text x="790" y="95" text-anchor="middle" class="small">ORTHOGRAPHIC LONGITUDINAL SECTION • CUT THROUGH CONTROL DESK + OBSERVATION WINDOW • VIEW TOWARD WEST</text>
+
+  <!-- dimension: 8.0 m section length -->
+  <path d="M300 850V950 M1100 850V950 M300 925H1100 M300 925l16-8v16z M1100 925l-16-8v16z" class="thin"/>
+  <text x="700" y="915" text-anchor="middle" class="small">8.0 m</text>
+
+  <!-- original structural envelope: 2.6 m high -->
+  <path d="M300 280H1100 M300 280V800 M1100 280V800" class="wall"/>
+  <path d="M250 280V800 M238 280H270 M238 800H270 M250 280l-8 16h16z M250 800l-8-16h16z" class="thin"/>
+  <text x="230" y="530" text-anchor="middle" class="small" transform="rotate(-90 230 530)">ORIGINAL STRUCTURAL CEILING HEIGHT — 2.6 m</text>
+  <text x="410" y="265" class="small">STRUCTURAL SLAB</text>
+
+  <!-- asymmetric finished ceiling, low side then sloping ridge into high zone -->
+  <path d="M305 370H555 L625 290 H1095" class="heavy"/>
+  <path d="M305 280V370 M555 280V370 M625 280V290 M1095 280V290" class="thin"/>
+  <path d="M625 275V315" class="heavy"/>
+  <text x="625" y="235" text-anchor="middle" class="tiny">VISIBLE RIDGE LINE</text>
+  <text x="405" y="410" text-anchor="middle" class="label">LOW ZONE</text>
+  <text x="880" y="330" text-anchor="middle" class="label">HIGH ZONE</text>
+  <path d="M510 370V800 M498 370H522 M498 800H522 M510 370l-8 16h16z M510 800l-8-16h16z" class="thin"/>
+  <text x="490" y="610" text-anchor="middle" class="small" transform="rotate(-90 490 610)">2.15 m CLEAR HEIGHT</text>
+  <path d="M1060 290V770 M1048 290H1072 M1048 770H1072 M1060 290l-8 16h16z M1060 770l-8-16h16z" class="thin"/>
+  <text x="1040" y="540" text-anchor="middle" class="small" transform="rotate(-90 1040 540)">2.4 m CLEAR HEIGHT</text>
+
+  <!-- exposed ductwork in low ceiling void -->
+  <path d="M335 315H510 Q530 315 530 335 Q530 355 510 355H420 Q400 355 400 335 Q400 315 420 315" class="heavy"/>
+  <path d="M370 315V355 M460 315V355" class="thin"/>
+  <text x="425" y="300" text-anchor="middle" class="tiny">EXPOSED DUCTWORK — LOW ZONE VOID</text>
+
+  <!-- ground slab and floating platform -->
+  <path d="M300 800H1100" class="heavy"/>
+  <path d="M555 800V770 H1100" class="wall"/>
+  <path d="M555 770H1100" class="dash"/>
+  <text x="830" y="755" text-anchor="middle" class="small">FLOATING FLOOR PLATFORM — CONTROL + PERFORMANCE ONLY</text>
+  <path d="M555 800h-22v-30" class="thin"/><text x="510" y="790" text-anchor="end" class="tiny">STEP AT PLATFORM EDGE</text>
+
+  <!-- staircase arrives at the low end -->
+  <path d="M300 800H330V770H360V740H390V710H420V680H450V650H480V620H510" class="wall"/>
+  <path d="M300 800H515" class="thin"/>
+  <text x="385" y="835" text-anchor="middle" class="small">STAIR ARRIVAL — LOW END</text>
+
+  <!-- recessed cable channel at visible west-wall base -->
+  <path d="M300 800h45v-25h35v25" class="heavy"/>
+  <path d="M307 794h65" class="thin" stroke-dasharray="7 4"/>
+  <text x="326" y="875" text-anchor="middle" class="tiny">RECESSED CABLE CHANNEL /</text>
+  <text x="326" y="890" text-anchor="middle" class="tiny">REMOVABLE METAL PLATES</text>
+
+  <!-- repair / control / performance references -->
+  <rect x="385" y="700" width="90" height="100" class="fill"/>
+  <text x="430" y="745" text-anchor="middle" class="tiny">REPAIR</text><text x="430" y="761" text-anchor="middle" class="tiny">BENCH</text>
+  <path d="M385 720H340" class="thin"/>
+
+  <!-- control desk faces north/right in section toward observation window -->
+  <rect x="600" y="620" width="135" height="150" class="fill"/>
+  <rect x="615" y="638" width="105" height="38" class="thin"/>
+  <circle cx="665" cy="735" r="25" class="line"/>
+  <text x="667" y="695" text-anchor="middle" class="small">CONTROL DESK</text>
+  <text x="667" y="715" text-anchor="middle" class="tiny">FACING WINDOW</text>
+
+  <!-- acoustic partition through the structural slab -->
+  <rect x="790" y="280" width="28" height="490" class="wall"/>
+  <text x="852" y="345" class="tiny">FULL-HEIGHT ACOUSTIC</text><text x="852" y="361" class="tiny">PARTITION TO STRUCTURAL SLAB</text>
+  <!-- observation window, drawn in the section plane -->
+  <rect x="790" y="480" width="28" height="128" fill="white" stroke="black" stroke-width="3"/>
+  <path d="M792 596L816 572 M792 570L816 546 M792 544L816 520" class="thin"/>
+  <path d="M735 545H782" class="thin"/>
+  <text x="730" y="530" text-anchor="end" class="tiny">OBSERVATION WINDOW</text>
+  <text x="730" y="546" text-anchor="end" class="tiny">2.4 m WIDE (PLAN)</text>
+
+  <path d="M875 720v-110 M855 645h40 M855 685h40" class="line"/>
+  <circle cx="950" cy="685" r="34" class="line"/><circle cx="950" cy="685" r="12" class="line"/>
+  <path d="M910 730l15-27 M990 730l-15-27" class="line"/>
+  <text x="935" y="755" text-anchor="middle" class="small">PERFORMANCE AREA</text>
+  <text x="935" y="773" text-anchor="middle" class="tiny">INSTRUMENTS / DRUMS</text>
+
+  <!-- cut direction and notes -->
+  <path d="M1100 1040H300 M300 1040l18-9v18z" class="thin"/>
+  <text x="700" y="1025" text-anchor="middle" class="small">SECTION VIEW DIRECTION — WEST</text>
+
+  <!-- unknowns box -->
+  <rect x="1180" y="260" width="340" height="260" class="line"/>
+  <text x="1205" y="300" class="label">UNKNOWNS — DO NOT INFER</text>
+  <text x="1205" y="350" class="small">UNKNOWN:</text><text x="1205" y="375" class="small">ACOUSTIC TREATMENT</text>
+  <text x="1205" y="415" class="small">UNKNOWN:</text><text x="1205" y="440" class="small">ELECTRICAL DISTRIBUTION /</text><text x="1205" y="463" class="small">WALL PENETRATIONS</text>
+  <text x="1205" y="500" class="small">UNKNOWN:</text><text x="1205" y="523" class="small">STRUCTURAL CAPACITY FOR FLOATING FLOOR</text>
+  <text x="300" y="1110" class="small">NOTES: ALL DIMENSION LABELS ARE USER-PROVIDED. SECTION IS DIAGRAMMATIC AND ORTHOGRAPHIC; NO UNSPECIFIED BUILD-UP DIMENSIONS ARE IMPLIED.</text>
+</svg>
