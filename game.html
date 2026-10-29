@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Room Tone — Game Proposal · Ran Chen</title>
+  <meta name="description" content="Room Tone: a proposal for a small web game about auditory hallucination. A recording engineer alone in a studio at 3 a.m. tries to record thirty seconds of silence.">
+  <meta property="og:title" content="Room Tone — Game Proposal · Ran Chen">
+  <meta property="og:description" content="A proposal for a small web game about auditory hallucination, for the theme Hallucination.">
+  <meta property="og:url" content="https://cheesebk.github.io/ai-design-portfolio/game.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="home" href="index.html">Ran Chen</a>
+    <ul>
+      <li><a href="cover.html">−0</a></li>
+      <li><a href="studio.html">Punk Radio</a></li>
+      <li><a href="game.html" aria-current="page">Room Tone</a></li>
+    </ul>
+  </header>
+
+  <main class="wrap">
+    <!-- 01 INTRODUCE THE GAME -->
+    <section class="p-head" id="intro">
+      <div class="kicker">Project 03 · Game proposal · Theme: Hallucination</div>
+      <h1>Room Tone</h1>
+      <p class="sub">A small web game about hearing things that are not there. You are a recording engineer, alone in the studio at 3 a.m., trying to record thirty seconds of silence.</p>
+    </section>
+
+    <figure>
+      <div class="g-hero" id="hero">
+        <canvas tabindex="0" aria-label="Interactive preview. Click or tap where you think a sound came from. Press Enter to listen at the centre."></canvas>
+        <div class="rec"><i></i>REC · Room tone · <output id="clock">00:30</output><span>Click where you hear something</span></div>
+        <div class="legend"><b></b>Real source<br><b class="p"></b>Phantom</div>
+        <button class="sound" type="button" aria-pressed="false" id="snd"><i></i><span>Sound off</span></button>
+      </div>
+      <figcaption><b>Representative visual, playable.</b> A top-down plan of the live room. Turn sound on and wear headphones: each sound is panned to where it happens. Some sounds have a source. Some do not.</figcaption>
+    </figure>
+
+    <dl class="facts">
+      <div><dt>Working title</dt><dd>Room Tone</dd></div>
+      <div><dt>Main interaction</dt><dd>One input: click where you heard a sound</dd></div>
+      <div><dt>Structure</dt><dd>Opening · three stages · ending · about 4 minutes</dd></div>
+      <div><dt>Platform</dt><dd>Browser · HTML Canvas + Web Audio API · headphones recommended</dd></div>
+      <div><dt>Designer</dt><dd>Ran Chen — sound, code, visuals</dd></div>
+      <div><dt>Context</dt><dd>DSC 494 · Weeks 10–12 · Fall 2026</dd></div>
+    </dl>
+
+    <p class="lede">The player is asked to do one thing: listen to an empty room and point at anything they hear. At first every sound has a source. Then the room starts playing back the session that just ended — a voice, a piano note, a cymbal — from places where nothing stands. The game ends when the player learns to stop pointing.</p>
+
+    <nav class="toc" aria-label="Proposal contents">
+      <a href="#case"><span>02</span>Case study</a>
+      <a href="#ai"><span>03</span>Discussion with AI</a>
+      <a href="#concept"><span>04</span>Narrative &amp; concept</a>
+      <a href="#journey"><span>05</span>Player journey</a>
+      <a href="#style"><span>06</span>Style &amp; sound</a>
+      <a href="#plan"><span>07</span>Build plan</a>
+    </nav>
+
+    <!-- 02 CASE STUDY -->
+    <section class="sec" id="case">
+      <div class="sec-h"><span class="n">02</span><h2>Case study: Loneliness</h2></div>
+      <p>I played <a href="https://jordanmagnuson.itch.io/loneliness">Loneliness</a> in the browser before reading anything about it. I chose it because it uses a single input — movement — and still makes you feel something. Room Tone also has one input, so I wanted to learn how meaning can come from how the world answers a single action.</p>
+
+      <dl class="facts" style="margin-top:0">
+        <div><dt>Game</dt><dd>Loneliness (2010; HTML5 port 2020)</dd></div>
+        <div><dt>Designer</dt><dd>Jordan Magnuson — design and programming</dd></div>
+        <div><dt>Music</dt><dd>Kevin MacLeod (credited on the Steam release)</dd></div>
+        <div><dt>Input</dt><dd>Arrow keys only · no text · a few minutes</dd></div>
+      </dl>
+
+      <h3>Three moments</h3>
+      <div class="moments" id="moments">
+        <div class="moment"><span class="label">Moment 01 · Opening</span><p><b>Saw:</b> only my own square in an empty field. No text, no instructions.</p><p><b>Did:</b> started moving with the arrow keys to find out what was there.</p><p><b>Understood:</b> the game sets up the feeling — alone — before it shows me any rule.</p></div>
+        <div class="moment"><span class="label">Moment 02 · Approach</span><p><b>Saw:</b> a group of other squares ahead of me.</p><p><b>Did:</b> moved straight at them, trying to bump into them.</p><p><b>Understood:</b> they moved apart and then disappeared. Getting close is exactly what makes them go.</p></div>
+        <div class="moment"><span class="label">Moment 03 · Ignore, then leave</span><p><b>Saw:</b> when I stopped chasing and just passed by, the other squares stayed on screen.</p><p><b>Did:</b> after a while I quit the game myself, before reaching any ending.</p><p><b>Understood:</b> they can exist near me only if I leave them alone — and the game let me decide when to stop.</p></div>
+      </div>
+
+      <h3>Player-action events</h3>
+      <div class="tablewrap">
+        <table class="ev" id="events">
+          <thead><tr><th>#</th><th>Player action</th><th>Game response</th><th>Player understanding</th></tr></thead>
+          <tbody>
+            <tr><td>E1</td><td>Presses an arrow key at the start</td><td>My square moves alone through an empty field</td><td>Movement is the only thing I can do</td></tr>
+            <tr><td>E2</td><td>Moves toward a group of squares</td><td>They move apart and disappear</td><td>Approaching others drives them away</td></tr>
+            <tr><td>E3</td><td>Tries again with another group</td><td>Same response: they scatter and vanish</td><td>It is a rule of the world, not an accident</td></tr>
+            <tr><td>E4</td><td>Stops chasing and moves past them</td><td>They stay on screen</td><td>They tolerate me at a distance</td></tr>
+            <tr><td>E5</td><td>Quits the game</td><td>No ending is reached</td><td>I chose when the loneliness ended, not the game</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Three kinds of evidence</h3>
+      <div class="evidence" id="evidence">
+        <div class="c"><span class="label">Creator statement</span><p>The itch.io page calls it “an experimental, minimalistic microgame about loneliness” and tags it as a notgame and artgame. It lists the game as textless. In the 2020 devlog, Magnuson says he ported it to HTML5 so it would survive the end of Flash.</p></div>
+        <div class="o"><span class="label">My observation</span><p>Other squares scatter and vanish whenever I approach, and stay whenever I ignore them. At the start I only see myself. I quit before the end, so I did not see the end screen that Magnuson changed in the 2020 port.</p></div>
+        <div class="i"><span class="label">My interpretation</span><p>The loneliness is not other people rejecting me — it is a distance that my own movement creates. Company is possible only at a distance. <em>Uncertain:</em> I did not finish, so I cannot say how the creator resolves it.</p></div>
+      </div>
+
+      <h3>Sources</h3>
+      <ul class="sources">
+        <li><span class="label">Official</span><a href="https://jordanmagnuson.itch.io/loneliness">Loneliness on itch.io</a> — play page, description, release history, credits</li>
+        <li><span class="label">Creator</span><a href="https://jordanmagnuson.itch.io/loneliness/devlog">Loneliness 10th Anniversary Update</a> — Magnuson’s devlog on the HTML5 port (Dec 4, 2020)</li>
+        <li><span class="label">Release</span><a href="https://store.steampowered.com/app/1524790/Loneliness/">Steam page</a> — description and music credit to Kevin MacLeod</li>
+        <li><span class="label">Context</span><a href="https://en.wikipedia.org/wiki/Jordan_Magnuson">Jordan Magnuson (Wikipedia)</a> — minimalist games, TIGSource, the 2023 book <i>Game Poems</i></li>
+        <li><span class="label">Critique</span>Extra Credits, “Mechanics as Metaphor” — the episode that made the game widely known. <em>Unverified: sources disagree on the episode number (Season 4, Ep. 3 vs Ep. 25), so I cite it by title only.</em></li>
+      </ul>
+    </section>
+
+    <!-- 03 AI DISCUSSION -->
+    <section class="sec" id="ai">
+      <div class="sec-h"><span class="n">03</span><h2>Discussion with AI</h2></div>
+      <p>I used Claude as a research partner. I gave it my play notes first, asked it to research the creator and check each claim against the source pages, then pushed back where its reading did not match what I experienced.</p>
+
+      <h3>Verified research</h3>
+      <div class="body" id="verified">
+        <p><strong>Confirmed against the source pages:</strong> Jordan Magnuson made Loneliness as a Flash game, first released April 26, 2010. It was an official selection of the 2011 Extra Credits Innovation Awards and the subject of their “Mechanics as Metaphor” episode. He ported it to HTML5 in December 2020 so it would outlive Flash. The Steam release credits the music to Kevin MacLeod. The itch.io page tags it textless, notgame and artgame.</p>
+        <p><strong>Could not verify:</strong> the Extra Credits episode number (two sources disagree), what exactly changed in the 2020 end screen, and whether the music reacts to the player. I list these as open, not as facts.</p>
+      </div>
+
+      <h3>Two gaps I found</h3>
+      <div class="gaps" id="gaps">
+        <div class="gap"><span class="label">Gap 01</span><h4>Who causes the loneliness</h4><p><b>AI said:</b> loneliness is passive — something other people do to the player.</p><p><b>My evidence:</b> the squares only vanish when <em>I</em> move toward them. The cause is my own action.</p></div>
+        <div class="gap"><span class="label">Gap 02</span><h4>The half it ignored</h4><p><b>AI said:</b> the game punishes reaching out — a reading built only on approaching.</p><p><b>My evidence:</b> when I ignored them, they stayed. And they did not just retreat, they disappeared. The game also offers coexistence at a distance.</p></div>
+      </div>
+
+      <h3>Selected exchange</h3>
+      <div class="chat" id="chat">
+        <div class="msg me"><span class="label">Me · new evidence</span><p>You read it as rejection and said loneliness is caused by others. But when I stopped chasing them, they stayed. And they didn’t just move away — they disappeared. Reconsider.</p></div>
+        <div class="msg ai"><span class="label">Claude · revised reading</span><p><b>Reading A — rejection:</b> reaching out drives people away, and ignoring them is just giving up.</p><p><b>Reading B — presence through distance:</b> others exist only while you don’t try to reach them. Because they vanish rather than flee, it is the act of approaching that erases them — not their choice to leave.</p><p>Your observation that they stay when ignored supports B better than A.</p></div>
+        <p class="note">Condensed and translated from a conversation in Chinese.</p>
+      </div>
+
+      <div class="decision" id="decision"><span class="label">My conclusion → design decision</span><p>In Loneliness, attention erases others. Room Tone inverts this: attention <em>creates</em> them. Clicking a phantom makes it multiply; ignoring it lets it fade. Both games share one exit — stop reaching. And because I quit Loneliness before its ending myself, Room Tone’s ending must arrive through stillness within seconds, and be clearly marked, so players don’t leave first.</p></div>
+    </section>
+
+    <!-- 04 NARRATIVE & CONCEPT -->
+    <section class="sec" id="concept">
+      <div class="sec-h"><span class="n">04</span><h2>Narrative &amp; concept</h2></div>
+      <div class="body">
+        <p><strong>My reading of Hallucination.</strong> A hallucination is a perception without a source. As a recording engineer I know a quiet version of this very well: when you listen hard to an empty room or a silent track for long enough, your ears start to fill it in. You hear a voice in the noise floor, a note in the air conditioning. So my game is not about distorted images. It is about the gap between what you hear and what is actually there — and whether you should trust your ears.</p>
+        <p><strong>The world.</strong> A small live room in a recording studio, seen from above like a floor plan. A long session just ended: the piano is still open, a drum kit, a vocal mic, music stands, cables. Before closing, an engineer always records thirty seconds of <em>room tone</em> — the sound of the empty room — so the editor can patch gaps later. It is the one moment in a session when the job is to record nothing.</p>
+        <p><strong>The player’s role.</strong> You are that engineer. Your only tool is attention: click where you hear a sound. A real sound has a source you can find. A phantom does not — it is the session still playing in your head.</p>
+        <p><strong>The experience I want to create.</strong> Arrive in calm. Wonder at small real sounds. Doubt when sounds come from empty space. Notice that every click makes the room louder. Leave by choosing to stop — and hearing, for the first time, actual silence.</p>
+      </div>
+
+      <dl class="pillars" style="margin-top:28px">
+        <div><dt>Arrive</dt><dd>A dark plan of the room, a REC light, a 30-second clock. Ordinary.</dd></div>
+        <div><dt>Wonder</dt><dd>Small real sounds — a cymbal settling, a stand creaking — each with a place.</dd></div>
+        <div><dt>Doubt</dt><dd>Fragments of the session come from places where nothing stands.</dd></div>
+        <div><dt>Change</dt><dd>Clicking phantoms makes them multiply. Attention feeds the hallucination.</dd></div>
+        <div><dt>Leave</dt><dd>The player stops clicking. The phantoms fade. The take is finally clean.</dd></div>
+        <div><dt>Carry away</dt><dd>Silence is not empty. It is what the room sounds like when someone is listening.</dd></div>
+      </dl>
+    </section>
+
+    <!-- 05 PLAYER JOURNEY -->
+    <section class="sec" id="journey">
+      <div class="sec-h"><span class="n">05</span><h2>Interaction &amp; player journey</h2></div>
+      <p>One input across the whole game: <strong>click or tap a point in the room</strong>. What changes from stage to stage is what that click means. Each stage changes what the player understands, not what they can press.</p>
+
+      <h3>Flowchart</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 1080 360" role="img" aria-labelledby="fc-t">
+          <title id="fc-t">Flowchart: Opening, Stage 1 Calibrate, Stage 2 Phantoms, Stage 3 Feedback, Ending. Each stage loops on: hear a sound, click a point, check if a source is there.</title>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#aab6c6"/></marker>
+          </defs>
+          <g font-family="IBM Plex Mono, monospace" font-size="12" fill="#dcebff" letter-spacing="1.5">
+            <!-- main row -->
+            <g stroke="#aab6c6" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+              <path d="M170 90 H212"/><path d="M380 90 H422"/><path d="M590 90 H632"/><path d="M800 90 H842"/>
+            </g>
+            <rect x="20" y="50" width="150" height="80" fill="#0d1117" stroke="#aab6c6"/>
+            <text x="34" y="80">OPENING</text><text x="34" y="102" fill="#6f7b8c" font-size="11" letter-spacing="0.2">REC · 00:30</text><text x="34" y="118" fill="#6f7b8c" font-size="11" letter-spacing="0.2">“click what you hear”</text>
+            <rect x="214" y="50" width="166" height="80" fill="#0d1117" stroke="#8fc2ff"/>
+            <text x="228" y="80" fill="#8fc2ff">01 CALIBRATE</text><text x="228" y="102" fill="#6f7b8c" font-size="11" letter-spacing="0.2">every sound is real</text><text x="228" y="118" fill="#6f7b8c" font-size="11" letter-spacing="0.2">find 4 sources</text>
+            <rect x="424" y="50" width="166" height="80" fill="#0d1117" stroke="#ff3d7f" stroke-dasharray="5 4"/>
+            <text x="438" y="80" fill="#ff3d7f">02 PHANTOMS</text><text x="438" y="102" fill="#6f7b8c" font-size="11" letter-spacing="0.2">session plays back</text><text x="438" y="118" fill="#6f7b8c" font-size="11" letter-spacing="0.2">from empty space</text>
+            <rect x="634" y="50" width="166" height="80" fill="#0d1117" stroke="#ff3d7f"/>
+            <text x="648" y="80" fill="#ff3d7f">03 FEEDBACK</text><text x="648" y="102" fill="#6f7b8c" font-size="11" letter-spacing="0.2">each click adds noise</text><text x="648" y="118" fill="#6f7b8c" font-size="11" letter-spacing="0.2">meter climbs</text>
+            <rect x="844" y="50" width="216" height="80" fill="#0d1117" stroke="#dcebff"/>
+            <text x="858" y="80">ENDING · CLEAN TAKE</text><text x="858" y="102" fill="#6f7b8c" font-size="11" letter-spacing="0.2">player stops clicking</text><text x="858" y="118" fill="#6f7b8c" font-size="11" letter-spacing="0.2">10 s of stillness → silence</text>
+            <!-- core loop -->
+            <g stroke="#6f7b8c" stroke-width="1" fill="none" marker-end="url(#ah)">
+              <path d="M297 130 V190"/>
+              <path d="M380 230 H420"/><path d="M600 230 H640"/>
+              <path d="M720 270 V320 H297 V272"/>
+            </g>
+            <rect x="214" y="192" width="166" height="76" fill="none" stroke="#6f7b8c" stroke-dasharray="3 3"/>
+            <text x="228" y="222">HEAR</text><text x="228" y="242" fill="#6f7b8c" font-size="11" letter-spacing="0.2">panned + filtered</text><text x="228" y="258" fill="#6f7b8c" font-size="11" letter-spacing="0.2">by position</text>
+            <rect x="422" y="192" width="178" height="76" fill="none" stroke="#6f7b8c" stroke-dasharray="3 3"/>
+            <text x="436" y="222">CLICK A POINT</text><text x="436" y="242" fill="#6f7b8c" font-size="11" letter-spacing="0.2">the only input</text><text x="436" y="258" fill="#6f7b8c" font-size="11" letter-spacing="0.2">mouse or tap</text>
+            <rect x="642" y="192" width="158" height="76" fill="none" stroke="#6f7b8c" stroke-dasharray="3 3"/>
+            <text x="656" y="222">SOURCE THERE?</text><text x="656" y="242" fill="#8fc2ff" font-size="11" letter-spacing="0.2">yes → blue ring, quiet</text><text x="656" y="258" fill="#ff3d7f" font-size="11" letter-spacing="0.2">no → outline appears</text>
+            <text x="320" y="344" fill="#6f7b8c" font-size="11" letter-spacing="0.2">CORE LOOP · repeats in every stage; stages change what “no” means</text>
+            <path d="M922 130 V190" stroke="#dcebff" stroke-dasharray="2 4" fill="none"/>
+            <text x="860" y="214" fill="#6f7b8c" font-size="11" letter-spacing="0.2">exit only by NOT acting</text>
+          </g>
+        </svg>
+      </div>
+
+      <h3>Storyboard</h3>
+      <div class="board">
+        <div class="frame">
+          <svg viewBox="0 0 200 140" aria-hidden="true"><rect x="16" y="16" width="168" height="108" fill="none" stroke="#2a3340"/><circle cx="26" cy="26" r="3" fill="#ff3d7f"/><text x="34" y="29" font-family="IBM Plex Mono" font-size="7" fill="#dcebff">REC 00:30</text><text x="100" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#6f7b8c">click what you hear</text></svg>
+          <span class="label">00 · Opening</span><h4>Empty room</h4>
+          <dl><dt>Goal</dt><dd>Record 30 s of room tone.</dd><dt>Input</dt><dd>Sound on, any click starts REC.</dd><dt>Feedback</dt><dd>Hum of the room, REC light blinks.</dd><dt>Continue</dt><dd>First sound arrives after 3 s.</dd></dl>
+        </div>
+        <div class="frame">
+          <svg viewBox="0 0 200 140" aria-hidden="true"><rect x="16" y="16" width="168" height="108" fill="none" stroke="#2a3340"/><rect x="30" y="34" width="56" height="30" fill="none" stroke="#6f7b8c"/><circle cx="140" cy="50" r="12" fill="none" stroke="#6f7b8c"/><circle cx="140" cy="50" r="20" fill="none" stroke="#8fc2ff"/><circle cx="140" cy="50" r="28" fill="none" stroke="#8fc2ff" opacity=".4"/><line x1="70" y1="100" x2="120" y2="100" stroke="#6f7b8c"/></svg>
+          <span class="label">01 · Calibrate</span><h4>Real sounds</h4>
+          <dl><dt>Goal</dt><dd>Find four real sources.</dd><dt>Input</dt><dd>Click where the cymbal rang.</dd><dt>Feedback</dt><dd>Blue ring; that sound stops.</dd><dt>Continue</dt><dd>Fourth source found → stage 2.</dd></dl>
+        </div>
+        <div class="frame">
+          <svg viewBox="0 0 200 140" aria-hidden="true"><rect x="16" y="16" width="168" height="108" fill="none" stroke="#2a3340"/><rect x="30" y="34" width="56" height="30" fill="none" stroke="#6f7b8c"/><circle cx="140" cy="50" r="12" fill="none" stroke="#6f7b8c"/><circle cx="110" cy="98" r="10" fill="none" stroke="#ff3d7f" stroke-dasharray="3 3"/><path d="M104 98 h12 M110 92 v12" stroke="#ff3d7f" opacity=".6"/></svg>
+          <span class="label">02 · Phantoms</span><h4>Nothing there</h4>
+          <dl><dt>Goal</dt><dd>Find the singer’s voice.</dd><dt>Input</dt><dd>Click the empty floor.</dd><dt>Feedback</dt><dd>A dashed mic outline appears.</dd><dt>Continue</dt><dd>Three outlines → stage 3.</dd></dl>
+        </div>
+        <div class="frame">
+          <svg viewBox="0 0 200 140" aria-hidden="true"><rect x="16" y="16" width="168" height="108" fill="none" stroke="#2a3340"/><g fill="none" stroke="#ff3d7f" stroke-dasharray="3 3"><circle cx="50" cy="96" r="9"/><circle cx="90" cy="40" r="9"/><circle cx="150" cy="104" r="9"/><circle cx="160" cy="40" r="9"/><circle cx="120" cy="72" r="9"/></g><rect x="176" y="30" width="4" height="84" fill="#2a3340"/><rect x="176" y="40" width="4" height="74" fill="#ff3d7f"/></svg>
+          <span class="label">03 · Feedback</span><h4>Louder</h4>
+          <dl><dt>Goal</dt><dd>Keep the take clean.</dd><dt>Input</dt><dd>Clicking phantoms…</dd><dt>Feedback</dt><dd>…spawns two more; meter climbs.</dd><dt>Continue</dt><dd>10 s with no click → ending.</dd></dl>
+        </div>
+        <div class="frame">
+          <svg viewBox="0 0 200 140" aria-hidden="true"><rect x="16" y="16" width="168" height="108" fill="none" stroke="#2a3340"/><circle cx="26" cy="26" r="3" fill="#8fc2ff"/><text x="34" y="29" font-family="IBM Plex Mono" font-size="7" fill="#8fc2ff">TAKE 1 · CLEAN</text><text x="100" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#dcebff">00:30 of room tone</text></svg>
+          <span class="label">04 · Ending</span><h4>Clean take</h4>
+          <dl><dt>Goal</dt><dd>—</dd><dt>Input</dt><dd>None. Stillness.</dd><dt>Feedback</dt><dd>Phantoms fade; real hum only.</dd><dt>Continue</dt><dd>Playback of the take; credits.</dd></dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 STYLE & SOUND -->
+    <section class="sec" id="style">
+      <div class="sec-h"><span class="n">06</span><h2>Style &amp; sound guide</h2></div>
+      <p>The rule for every choice: <strong>the eye should always be a little behind the ear.</strong> The picture stays minimal so the player has to listen.</p>
+
+      <h3>Visual &amp; interface</h3>
+      <div class="body">
+        <p><strong>Composition.</strong> A top-down floor plan of one room, drawn in thin lines, like an engineer’s session sketch. Objects are outlines, never filled, so a phantom outline and a real object look almost the same — the player cannot settle the question by looking.</p>
+        <p><strong>Colour.</strong> Two signals only. Cold blue means a sound had a source. Hot pink, dashed, means it did not. Everything else stays in the near-black and grey of my portfolio.</p>
+        <p><strong>Interface.</strong> Only what a real recording screen shows: a REC light, a 30-second clock and one level meter. No menu, no score, no text during play except the opening line.</p>
+        <p><strong>Motion.</strong> Real sounds draw smooth rings at full frame rate. Phantoms draw at a stuttering 12 frames per second, a difference you feel before you can name it.</p>
+      </div>
+      <div class="swatches">
+        <div class="sw"><i style="background:#07090c"></i><span>#07090C<em>Room in the dark</em></span></div>
+        <div class="sw"><i style="background:#6f7b8c"></i><span>#6F7B8C<em>Objects, plan lines</em></span></div>
+        <div class="sw"><i style="background:#8fc2ff"></i><span>#8FC2FF<em>Real source</em></span></div>
+        <div class="sw"><i style="background:#ff3d7f"></i><span>#FF3D7F<em>Phantom, REC</em></span></div>
+        <div class="sw"><i style="background:#dcebff"></i><span>#DCEBFF<em>Text, clean take</em></span></div>
+      </div>
+
+      <h3>Sound, silence &amp; rhythm</h3>
+      <div class="body">
+        <p><strong>Position is the information.</strong> Every sound runs through a Web Audio stereo panner and a low-pass filter set by its distance, so the ear can locate it. This is the whole skill the game teaches.</p>
+        <p><strong>Real sounds are dry and close.</strong> Short, physical sounds from the end of a session — a cymbal settling, a stand creaking, a chair, the air conditioning clicking off.</p>
+        <p><strong>Phantoms are wet and far.</strong> Fragments of the session itself — a breath before a vocal line, one piano note, a count-in — with long reverb, so they sound remembered rather than present.</p>
+        <p><strong>Silence is the reward.</strong> The ending removes the music, not adds it. The last thing the player hears is the room’s real hum.</p>
+        <p><strong>Sources.</strong> All audio will be my own recordings from ASU Fusion Studio, so there are no licensing problems. Sound starts off; the visitor turns it on.</p>
+      </div>
+
+      <h3>Annotated references</h3>
+      <div class="refs">
+        <div class="ref"><span class="label">Game · played</span><h4>Loneliness</h4><p class="by">Jordan Magnuson, 2010 · <a href="https://jordanmagnuson.itch.io/loneliness">itch.io</a></p><p><b>What it teaches me:</b> one input is enough if the world’s response carries the meaning. No text needed.</p><p><b>Used for:</b> keeping Room Tone to a single click and no instructions after the opening.</p></div>
+        <div class="ref"><span class="label">Game · documentation</span><h4>Monument Valley</h4><p class="by">ustwo games, 2014 · <a href="https://ustwo.com/work/monument-valley/">ustwo.com</a></p><p><b>What it teaches me:</b> an action can make a new part of the world visible that was impossible before.</p><p><b>Used for:</b> stage 2, where clicking empty space draws an object that was never there.</p></div>
+        <div class="ref"><span class="label">Sound art · documentation</span><h4>I Am Sitting in a Room</h4><p class="by">Alvin Lucier, 1969 · <a href="https://en.wikipedia.org/wiki/I_Am_Sitting_in_a_Room">overview</a></p><p><b>What it teaches me:</b> a room is an instrument. Re-recorded again and again, speech dissolves into the room’s own resonance.</p><p><b>Used for:</b> stage 3, where each click re-feeds the room and phantoms blur into resonance.</p></div>
+        <div class="ref"><span class="label">Installation · documentation</span><h4>The Forty Part Motet</h4><p class="by">Janet Cardiff, 2001 · <a href="https://en.wikipedia.org/wiki/The_Forty_Part_Motet">overview</a></p><p><b>What it teaches me:</b> one voice per speaker; walking through the room turns listening into an act of locating.</p><p><b>Used for:</b> the core mechanic — each sound has a position, and finding it is the play.</p></div>
+        <div class="ref"><span class="label">My own work</span><h4>Punk Radio</h4><p class="by">Ran Chen, 2026 · <a href="studio.html">project page</a></p><p><b>What it teaches me:</b> my studio world and palette already exist.</p><p><b>Used for:</b> continuity of colour, type and the studio setting across my portfolio.</p></div>
+      </div>
+    </section>
+
+    <!-- 07 BUILD PLAN -->
+    <section class="sec" id="plan">
+      <div class="sec-h"><span class="n">07</span><h2>Two-week build plan</h2></div>
+      <div class="plan">
+        <div class="week">
+          <span class="label">Week 2 · Build</span><h4>Playable prototype</h4>
+          <ol>
+            <li><b>Core loop first.</b> Canvas room plan, one click handler, Web Audio panner + low-pass by position. Test that a sound can be located on headphones.</li>
+            <li><b>Sound assets.</b> Record and edit room tone, 4–6 real sources and 6 phantom fragments at Fusion Studio.</li>
+            <li><b>Stages as a state machine.</b> Opening → Calibrate → Phantoms → Feedback → Ending, each with one rule change.</li>
+            <li><b>The ending.</b> 10-second idle timer, phantom fade-out, playback of the “clean take”.</li>
+            <li><b>Basics.</b> Sound toggle (off by default), headphone prompt, touch support.</li>
+          </ol>
+          <p class="done"><b>Done when:</b> a stranger can play from opening to ending without me explaining anything.</p>
+        </div>
+        <div class="week">
+          <span class="label">Week 3 · Test &amp; refine</span><h4>Playtest &amp; publish</h4>
+          <ol>
+            <li><b>Playtest with 5 people</b> — 3 audio students, 2 non-audio. Watch silently, then ask what they thought was real.</li>
+            <li><b>Measure two things:</b> can players locate real sounds in stage 1, and do they discover that stopping is the way out.</li>
+            <li><b>Tune</b> panning width, phantom reverb, stage length and the idle-timer hint.</li>
+            <li><b>Accessibility:</b> a visual-cue mode (direction arrows at the edge) for players without headphones or with hearing differences.</li>
+            <li><b>Publish</b> on this portfolio with a short process page and playtest notes.</li>
+          </ol>
+          <p class="done"><b>Risks:</b> laptop speakers make left/right weak → visual-cue mode; players may never stop clicking → after 60 s the REC light starts to slow down as a hint.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="next">
+      <a class="back" href="index.html">← All projects</a>
+      <a class="big" href="#intro">Room Tone ↑</a>
+    </nav>
+  </main>
+
+  <footer class="wrap site">
+    <span>Ran Chen · DSC 494 · Fall 2026</span>
+    <a href="mailto:chenran0109@gmail.com">chenran0109@gmail.com</a>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
