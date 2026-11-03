@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Room Tone — Play (first draft) · Ran Chen</title>
+  <meta name="description" content="Room Tone, first playable draft. A small web game about auditory hallucination: alone in the studio at 3 a.m., record thirty seconds of an empty room.">
+  <meta property="og:title" content="Room Tone — Play (first draft)">
+  <meta property="og:description" content="A small web game about hearing things that are not there. Headphones on.">
+  <meta property="og:url" content="https://cheesebk.github.io/ai-design-portfolio/play.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="play.css">
+</head>
+<body class="play">
+  <main class="rt" id="rt">
+    <canvas id="room" tabindex="0" aria-label="Top-down plan of a recording studio live room. Click or tap where you hear a sound. Keyboard: arrow keys move a cursor, Enter listens there."></canvas>
+
+    <div class="hud-rec" id="rec" aria-live="off">
+      <i></i><span>REC · <b id="take">Take 1</b></span><output id="clock">00:30</output>
+    </div>
+
+    <div class="hud-top">
+      <a href="game.html">Proposal</a>
+      <button class="snd" type="button" id="snd" aria-pressed="false"><i></i><span>Sound off</span></button>
+    </div>
+
+    <div class="meter" id="meter" aria-hidden="true"><b></b><span>LVL</span></div>
+
+    <p class="line" id="line" aria-live="polite"></p>
+
+    <!-- OPENING -->
+    <section class="ov" id="title" aria-labelledby="t-h">
+      <div class="card">
+        <div class="kicker">First draft · Week 2 · Theme: Hallucination</div>
+        <h1 id="t-h">Room Tone</h1>
+        <p class="lead">3:07 a.m. The session is over. Before you lock up, record thirty seconds of the empty room.</p>
+        <p class="phones">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="4" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="17" y="14" width="4" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span>Headphones on. Every sound comes from where it happens.</span>
+        </p>
+        <div class="btns">
+          <button class="btn pri" type="button" id="go-snd">Start with sound</button>
+          <button class="btn" type="button" id="go-mute">Start muted</button>
+        </div>
+        <p class="small">Click or tap only · about 4 minutes</p>
+      </div>
+    </section>
+
+    <!-- ENDING -->
+    <section class="ov credits" id="credits" hidden aria-labelledby="c-h">
+      <div class="card">
+        <div class="kicker" id="c-take">Take 1 · clean</div>
+        <h2 id="c-h">Clean take.</h2>
+        <p class="lead">Silence is what a room sounds like when someone is listening.</p>
+        <dl class="cr">
+          <div><dt>Design, sound, code</dt><dd>Ran Chen</dd></div>
+          <div><dt>Course</dt><dd>DSC 494 · AI for Interdisciplinary Design</dd></div>
+          <div><dt>Instructor</dt><dd>Weidi Zhang</dd></div>
+          <div><dt>Build</dt><dd>Week 2 · first playable draft</dd></div>
+        </dl>
+        <p class="note"><b>Work in progress.</b> The sounds in this draft are synthesized placeholders made in the browser. My own recordings from ASU Fusion Studio replace them in Week 3.</p>
+        <div class="btns">
+          <button class="btn pri" type="button" id="again">Play again</button>
+          <a class="btn" href="game.html">Read the proposal</a>
+          <a class="btn" href="index.html">Portfolio</a>
+        </div>
+      </div>
+    </section>
+
+    <noscript><p class="line" style="opacity:1">Room Tone needs JavaScript to run.</p></noscript>
+  </main>
+
+  <script src="play.js"></script>
+</body>
+</html>
