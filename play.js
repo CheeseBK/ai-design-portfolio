@@ -1,10 +1,12 @@
-// Room Tone — first playable draft (DSC 494, Week 2)
+// Room Tone — final build (DSC 494, Week 3)
 // One input: click / tap where you hear something.
-// Opening -> 01 Calibrate -> 02 Phantoms -> 03 Feedback -> Ending (clean take)
+// Sound check -> Opening -> 01 Calibrate -> 02 Phantoms -> 03 Feedback -> Ending (clean take)
 //
-// Sounds: synthesized placeholders (Web Audio). In Week 3 each entry in SND
-// gets replaced by a recorded buffer from Fusion Studio; the placement chain
-// (pan + distance low-pass, dry vs. reverb) stays the same.
+// Week 3 changes: the phantoms are no longer random fragments but one song —
+// the song recorded all night — on a tempo grid. The more the player listens
+// for it (clicks), the more of the song plays; stillness takes it apart layer
+// by layer. Stage titles, a goal meter, earlier hints, a headphone check and
+// an ending that says what happened.
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
@@ -209,57 +211,129 @@
       o.connect(g).connect(dst);
     }
   }
+  // ---- the song from tonight's session: D minor, 76 BPM, i–VI–III–VII
+  const BPM = 76, BEAT = 60 / BPM, BAR = BEAT * 4;
+  const NOTE = { A3: 220, Bb3: 233.08, C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392, A4: 440 };
+  const MELODY = ['D4', 'F4', 'E4', 'D4', 'C4', 'D4', 'A3', 'C4', 'D4', 'F4', 'G4', 'F4', 'E4', 'D4', 'C4', 'D4'].map(n => NOTE[n]);
+  const CHORDS = [[146.83, 174.61, 220], [116.54, 146.83, 174.61], [174.61, 220, 261.63], [130.81, 164.81, 196]]; // Dm Bb F C
+  let songT0 = 0, melI = 0;
+  const barNow = t => Math.max(0, Math.floor((t - songT0) / BAR)) % 4;
+  const grid = (t, div) => songT0 + Math.ceil((t - songT0) / div - 1e-6) * div; // next grid line at or after t
   const FRAG = {
-    ah(d, t) { vowel(d, t, pick([220, 247, 262, 294]), [800, 1150, 2900]); },
-    oo(d, t) { vowel(d, t, pick([196, 220, 247, 262]), [350, 620, 2700]); },
+    ah(d, t) { vowel(d, t, MELODY[melI++ % MELODY.length], [800, 1150, 2900]); },
+    oo(d, t) { vowel(d, t, MELODY[melI++ % MELODY.length], [350, 620, 2700]); },
     breath(d, t) {
       const g = gain(0); noise(t, .8).connect(filt('bandpass', 1300, .7)).connect(filt('highpass', 450)).connect(g).connect(d);
       g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.45, t + .55); g.gain.linearRampToValueAtTime(0, t + .68);
     },
-    piano(d, t) { piano(d, t, pick([262, 294, 330, 392, 440]), .22); },
-    chord(d, t) { const f = pick([196, 220, 262]); piano(d, t, f, .16); piano(d, t + .06, f * 1.26, .13); piano(d, t + .12, f * 1.5, .12); },
+    piano(d, t) { piano(d, t, CHORDS[barNow(t)][2] * 2, .22); },
+    chord(d, t) { const c = CHORDS[barNow(t)]; c.forEach((f, i) => piano(d, t + i * .05, f * 2, [.16, .13, .12][i])); },
     count(d, t) { // count-in: three sticks, and the downbeat never comes
       for (let i = 0; i < 3; i++) {
-        const tt = t + i * .5, g = gain(0);
+        const tt = t + i * BEAT, g = gain(0);
         noise(tt, .05).connect(filt('bandpass', 3200, 2.5)).connect(g).connect(d);
         g.gain.setValueAtTime(.7, tt); g.gain.exponentialRampToValueAtTime(.001, tt + .035);
         const o = osc('sine', 1900, tt, .03), og = gain(.08); o.connect(og).connect(d);
       }
     }
   };
-  const FRAG_SEQ = ['ah', 'breath', 'ah', 'piano', 'oo', 'count', 'ah', 'chord'];
+  // which part of the song a phantom plays depends on how loud the room already is:
+  // a few voices = the vocal line; more = piano; a crowded room = the count-in, the band
+  const SEQ = [['ah', 'breath', 'oo', 'ah'], ['ah', 'piano', 'oo', 'chord', 'ah', 'piano'], ['ah', 'chord', 'oo', 'count', 'ah', 'piano', 'chord']];
+  // a drummer that is not there, on the kit that is
+  function kick(d, t) {
+    const o = osc('sine', 110, t, .45), g = gain(0);
+    o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .3);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.9, t + .004); g.gain.exponentialRampToValueAtTime(.001, t + .42);
+    o.connect(g).connect(d);
+  }
+  function hat(d, t, a) {
+    const g = gain(0); noise(t, .06).connect(filt('highpass', 7500)).connect(g).connect(d);
+    g.gain.setValueAtTime(a, t); g.gain.exponentialRampToValueAtTime(.001, t + .045);
+  }
+  function snare(d, t) {
+    const g = gain(0); noise(t, .22).connect(filt('bandpass', 1900, .8)).connect(g).connect(d);
+    g.gain.setValueAtTime(.5, t); g.gain.exponentialRampToValueAtTime(.001, t + .2);
+    const o = osc('triangle', 190, t, .12), og = gain(0); og.gain.setValueAtTime(.25, t); og.gain.exponentialRampToValueAtTime(.001, t + .1); o.connect(og).connect(d);
+  }
+  function bass(d, t, f) {
+    const o = osc('triangle', f / 2, t, BEAT * 1.9), g = gain(0);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.5, t + .02); g.gain.setTargetAtTime(0, t + BEAT * 1.2, .15);
+    o.connect(filt('lowpass', 500)).connect(g).connect(d);
+  }
   function playReal(src) { if (!ac) return; const t = ac.currentTime + .01; SND[src.snd](place(src.u, src.v, { dry: 1, wet: .07 }), t); }
-  function playFrag(name, u, v, wetter) {
+  function playFrag(name, u, v, wetter, t) {
     if (!ac) return;
-    const t = ac.currentTime + .01;
-    FRAG[name](place(u, v, { dry: wetter ? .1 : .22, wet: wetter ? 1.1 : .9, lpMax: 3200, gain: .9 }), t);
+    FRAG[name](place(u, v, { dry: wetter ? .1 : .22, wet: wetter ? 1.1 : .9, lpMax: 3200, gain: .9 }), t || ac.currentTime + .01);
   }
 
   // ------------------------------------------------------------------ state
   let state = 'title', gt = 0, stT = 0;   // game time, time in current state
   let take = 1, clock = 30, ruinedT = 0;
   let calIdx = 0, found = new Set(), cur = null, nextEmit = 0, emits = 0;
-  let fragI = 0, ghostsMade = 0, lastClick = 0, autoSpawn = 0, stageNext = -1;
+  let ghostsMade = 0, lastClick = 0, autoSpawn = 0, stageNext = -1;
+  let seqI = 0, clean = 0, bestClean = 0, hintI = 0, fbClicks = 0, playStart = 0, endTime = 0;
+  let nextStep = 0, stepI = 0;            // phantom band scheduler (8th notes)
   const rings = [], ghosts = [], pings = [];
   let lvl = .1, ghostFade = 1, playP = 0, wave = null;
   const kb = { u: .5, v: .5, on: false };
+  const stageEl = $('#stage'), goalEl = $('#goal'), goalL = $('#goal-l'), goalV = $('#goal-v'), goalBar = $('#goal-bar');
+  const interEl = $('#inter');
+  const KIT = { u: .80, v: .25 }, PNO = { u: .22, v: .25 };
+  const CLEAN_NEED = 10;
 
   function say(text, faint) {
     lineEl.textContent = text || '';
     lineEl.classList.toggle('show', !!text);
     lineEl.classList.toggle('faint', !!faint);
   }
+  let interTimer = 0;
+  function inter(n, h, p, phantom) {
+    $('#inter-n').textContent = n; $('#inter-h').textContent = h; $('#inter-p').textContent = p;
+    interEl.classList.toggle('ph', !!phantom);
+    interEl.classList.add('show');
+    clearTimeout(interTimer); interTimer = setTimeout(() => interEl.classList.remove('show'), reduce ? 3600 : 3000);
+  }
+  function setStage(n, name) { stageEl.innerHTML = n ? `<b>${n} / 03</b> · ${name}` : (name || ''); }
+  function setGoal(label, value, frac, cls) {
+    goalEl.hidden = !label; if (!label) return;
+    goalL.textContent = label; goalV.textContent = value;
+    goalBar.style.width = (clamp(frac, 0, 1) * 100).toFixed(1) + '%';
+    goalEl.className = 'goal' + (cls ? ' ' + cls : '');
+  }
   function go(s) {
     state = s; stT = 0;
     if (s === 'opening') {
       recEl.className = 'hud-rec on'; say('Click where you hear something.');
+      setStage('', 'Room tone · 3:07 a.m.'); setGoal('');
       if (ac) setTarget(humG.gain, 1, .8);
     }
-    if (s === 'calibrate') { calIdx = 0; cur = SRC[0]; nextEmit = 0; emits = 0; }
-    if (s === 'phantoms') { nextEmit = 1.2; fragI = 0; }
-    if (s === 'feedback') { lastClick = 0; autoSpawn = 0; ghosts.forEach(g => { g.next = rand(.3, 1.6); g.life = 1; }); }
+    if (s === 'calibrate') {
+      calIdx = 0; cur = SRC[0]; nextEmit = 3.3; emits = 0;
+      setStage('01', 'Calibrate');
+      inter('01 / 03', 'Calibrate', 'Every sound in this room has a source. Find all four.');
+      say('Click where you hear something.');
+    }
+    if (s === 'phantoms') {
+      nextEmit = 3.2; seqI = 0;
+      if (ac) { songT0 = ac.currentTime + 3.2; melI = 0; }
+      setStage('02', 'Phantoms');
+      inter('02 / 03', 'Phantoms', 'The band left an hour ago. Someone is still singing. Find them.', true);
+      say('');
+    }
+    if (s === 'feedback') {
+      lastClick = 0; autoSpawn = 0; hintI = 0; clean = 0; bestClean = 0; fbClicks = 0;
+      ghosts.forEach(g => { g.next = rand(.3, 1.6); g.life = 1; });
+      if (ac) { nextStep = grid(ac.currentTime + .5, BEAT / 2); stepI = Math.round((nextStep - songT0) / (BEAT / 2)); }
+      setStage('03', 'Feedback');
+      inter('03 / 03', 'Get a clean take', 'Ten seconds of the empty room. No voices, no song. Then you can go home.', true);
+      say('');
+    }
     if (s === 'ending') {
+      endTime = gt;
       recEl.className = 'hud-rec clean'; say('');
+      setStage('', 'Clean take');
+      setGoal('Clean', CLEAN_NEED.toFixed(1) + ' / ' + CLEAN_NEED.toFixed(1) + ' s', 1, 'done');
       takeEl.textContent = 'Take ' + take + ' · clean';
       if (ac) { setTarget(droneG.gain, 0, .8); setTarget(fbGain.gain, 0, .6); }
       wave = Array.from({ length: 360 }, (_, i) => { let s = 0; for (let k = 0; k < 4; k++) s += Math.random(); return (s / 4 - .5) * (.6 + .4 * Math.sin(i * .05)); });
@@ -267,6 +341,10 @@
     if (s === 'credits') {
       creditsEl.hidden = false; creditsEl.classList.add('out');
       creditsEl.querySelector('#c-take').textContent = 'Take ' + take + ' · clean';
+      $('#s-ph').textContent = ghostsMade;
+      $('#s-take').textContent = take - 1;
+      const secs = Math.round(endTime - playStart); $('#s-time').textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+      setStage(''); setGoal('');
       requestAnimationFrame(() => creditsEl.classList.remove('out'));
       setTimeout(() => $('#again').focus({ preventScroll: true }), 900);
     }
@@ -274,6 +352,7 @@
   function reset() {
     rings.length = ghosts.length = pings.length = 0; found = new Set();
     take = 1; clock = 30; ghostsMade = 0; ghostFade = 1; playP = 0; kb.on = false; stageNext = -1; calIdx = 0; cur = null; lastPhAudio = -1;
+    playStart = gt;
     recEl.querySelector('i').style.animationDuration = '';
     takeEl.textContent = 'Take 1';
     if (ac) { humG.gain.setValueAtTime(1, ac.currentTime); droneG.gain.setValueAtTime(0, ac.currentTime); fbGain.gain.setValueAtTime(0, ac.currentTime); }
@@ -284,27 +363,72 @@
     setSound(withSound);
     if (!ac) { initAudio(); if (ac) out.gain.value = soundOn ? .9 : 0; }
     if (ac && ac.state !== 'running') ac.resume();
-    titleEl.classList.add('out');
-    setTimeout(() => { titleEl.hidden = true; }, 900);
+    [titleEl, checkEl].forEach(el => { if (!el.hidden) { el.classList.add('out'); setTimeout(() => { el.hidden = true; }, 900); } });
     cv.focus({ preventScroll: true });
     reset();
     const jump = Q.get('stage'); // testing shortcut: ?stage=phantoms|feedback|ending
     if (jump === 'phantoms' || jump === 'feedback' || jump === 'ending') {
       SRC.forEach(s => found.add(s.id));
+      if (ac) songT0 = ac.currentTime;
       if (jump !== 'phantoms') for (let i = 0; i < 3; i++) addGhost(freeFloor());
       go(jump);
     }
   }
 
-  function addRing(u, v, kind, o = {}) { rings.push({ u, v, kind, t: o.delay ? -o.delay : 0, born: gt, str: o.str || 1, big: !!o.big }); }
+  // ---- sound check: one tone left, one right (classmate feedback)
+  const checkEl = $('#check');
+  function beep(pan, t) {
+    const p = ac.createStereoPanner ? ac.createStereoPanner() : null, g = gain(0);
+    const o = osc('sine', 1000, t, .5);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.18, t + .01); g.gain.setValueAtTime(.18, t + .4); g.gain.linearRampToValueAtTime(0, t + .48);
+    if (p) { p.pan.value = pan; o.connect(g).connect(p).connect(dry); } else o.connect(g).connect(dry);
+  }
+  let checkTimers = [];
+  function runCheck() {
+    if (!ac) return;
+    if (ac.state !== 'running') ac.resume();
+    checkTimers.forEach(clearTimeout); checkTimers = [];
+    const L = $('#k-l'), Rr = $('#k-r'), t = ac.currentTime + .15;
+    beep(-1, t); beep(1, t + .9);
+    checkTimers.push(setTimeout(() => L.classList.add('on'), 150), setTimeout(() => L.classList.remove('on'), 650),
+      setTimeout(() => Rr.classList.add('on'), 1050), setTimeout(() => Rr.classList.remove('on'), 1550));
+  }
+  function openCheck() {
+    setSound(true);
+    titleEl.classList.add('out'); setTimeout(() => { titleEl.hidden = true; }, 900);
+    checkEl.hidden = false; checkEl.classList.add('out');
+    requestAnimationFrame(() => checkEl.classList.remove('out'));
+    setTimeout(runCheck, 350);
+    setTimeout(() => $('#k-go').focus({ preventScroll: true }), 400);
+  }
+
+  function addRing(u, v, kind, o = {}) { rings.push({ u, v, kind, t: o.delay ? -o.delay : 0, born: gt, str: o.str || 1, big: !!o.big, small: !!o.small }); }
   function addGhost(p) { const g = { u: p.u, v: p.v, life: 1, born: gt, next: rand(.5, 2), jx: 0, jy: 0, decay: rand(4, 9) }; ghosts.push(g); ghostsMade++; return g; }
   let lastPhAudio = -1;
+  const loudness = () => ghosts.reduce((s, g) => s + g.life, 0);
   function emitPhantom(u, v, wetter) {
-    let name = FRAG_SEQ[fragI++ % FRAG_SEQ.length];
-    if (ghosts.length > 10 && name === 'chord') name = 'piano';
+    const n = loudness(), layer = n < 4 ? 0 : n < 9 ? 1 : 2, seq = SEQ[layer];
+    let name = seq[seqI++ % seq.length];
+    // quantize to the song's grid so the phantoms play in time with each other
+    let t = 0, delay = reduce ? 0 : .5;
+    if (ac) {
+      const now = ac.currentTime + .02;
+      t = name === 'count' ? grid(now, BAR) : grid(now, state === 'feedback' ? BEAT / 2 : BEAT);
+      if (!reduce) delay = (t - ac.currentTime) + .3;
+    }
     // cap the voice count: in a crowded room only some phantoms get a new sound, all of them still ring
-    if (gt - lastPhAudio > (ghosts.length > 12 ? .28 : .14)) { playFrag(name, u, v, wetter); lastPhAudio = gt; }
-    addRing(u, v, 'ph', { delay: reduce ? 0 : .5 });
+    if (gt - lastPhAudio > (ghosts.length > 12 ? .28 : .14)) { playFrag(name, u, v, wetter, t); lastPhAudio = gt; }
+    addRing(u, v, 'ph', { delay });
+  }
+  // the band that is not there: kit, then bass from the piano, louder as the room gets louder
+  function bandStep(i, t) {
+    const n = loudness(), pos = i % 8, delay = reduce ? 0 : Math.max(0, t - ac.currentTime) + .25;
+    if (n >= 5 && (pos === 0 || pos === 4 || (n >= 11 && pos === 5))) {
+      kick(place(KIT.u, KIT.v, { dry: .25, wet: .8, lpMax: 2600, gain: .7 }), t); addRing(KIT.u, KIT.v, 'ph', { delay, small: true });
+    }
+    if (n >= 8 && (pos === 2 || pos === 6)) snare(place(KIT.u - .05, KIT.v + .05, { dry: .2, wet: .9, lpMax: 3000, gain: .6 }), t);
+    if (n >= 11) hat(place(.835, .155, { dry: .2, wet: .7, lpMax: 4000, gain: .5 }), t, pos % 2 ? .12 : .22);
+    if (n >= 14 && (pos === 0 || pos === 4)) { bass(place(PNO.u, PNO.v, { dry: .3, wet: .7, lpMax: 1200, gain: .8 }), t, CHORDS[barNow(t)][0]); if (pos === 0) addRing(PNO.u, PNO.v, 'ph', { delay, small: true }); }
   }
 
   // ------------------------------------------------------------------ input
@@ -318,21 +442,26 @@
       if (state === 'calibrate' && cur && emits > 0 && dist(p, cur) < .11) {
         found.add(cur.id);
         addRing(cur.u, cur.v, 'real', { big: true, str: 1.4 });
-        if (calIdx === 0) say('');
+        if (calIdx === 0) say('Found it. That one is real.');
+        else if (calIdx === 1) say('');
         calIdx++; emits = 0;
-        if (calIdx >= SRC.length) { cur = null; stageNext = gt + 2.6; }
+        if (calIdx >= SRC.length) { cur = null; stageNext = gt + 2.6; say('Four sources. The room is calibrated.'); }
         else { cur = SRC[calIdx]; nextEmit = stT + 2.4; }
-      } else pings.push({ u, v, t: 0 });
+      } else {
+        pings.push({ u, v, t: 0 });
+        if (state === 'calibrate' && emits > 0 && calIdx === 0) say('Nothing there. Listen again — left or right? near or far?', true);
+      }
       return;
     }
 
     if (state === 'phantoms') {
-      const hit = rings.filter(r => r.kind === 'ph' && gt - r.born < 5.5 && dist(p, r) < .14).sort((a, b) => dist(p, a) - dist(p, b))[0];
+      const hit = rings.filter(r => r.kind === 'ph' && !r.small && gt - r.born < 5.5 && dist(p, r) < .14).sort((a, b) => dist(p, a) - dist(p, b))[0];
       if (hit && !ghosts.some(g => dist(g, hit) < .05)) {
         addGhost({ u: hit.u + rand(-.01, .01), v: hit.v + rand(-.015, .015) });
         addRing(hit.u, hit.v, 'ph', { big: true });
         playFrag('breath', hit.u, hit.v, true);
-        if (ghostsMade >= 3) stageNext = gt + 1.6;
+        say(['There is no one there. Only an outline.', 'Another one. Empty floor.', 'The song from tonight. It is still playing.'][Math.min(2, ghostsMade - 1)], ghostsMade < 3);
+        if (ghostsMade >= 3) stageNext = gt + 2.2;
       } else {
         const realHit = SRC.find(s => dist(p, s) < .08);
         if (realHit) addRing(realHit.u, realHit.v, 'real', { str: .5 }); else pings.push({ u, v, t: 0 });
@@ -341,15 +470,15 @@
     }
 
     if (state === 'feedback') {
-      lastClick = stT;
-      take++; clock = 30; ruinedT = .45;
+      lastClick = stT; fbClicks++;
+      take++; clock = 30; ruinedT = .45; clean = 0;   // any click is a sound on the take
       ghosts.forEach(g => { g.life = 1; });
       const near = ghosts.find(g => dist(p, g) < .1) || rings.find(r => r.kind === 'ph' && gt - r.born < 2.5 && dist(p, r) < .12);
       const realHit = SRC.find(s => dist(p, s) < .07);
       if (near) {                       // attention feeds the phantom: two more
         addRing(near.u, near.v, 'ph', { big: true });
         for (let i = 0; i < 2 && ghosts.length < 40; i++) { const g = addGhost(freeFloor(near, .6)); g.next = rand(.2, .9); }
-        playFrag(pick(['ah', 'oo', 'chord']), near.u, near.v, true);
+        if (ac) playFrag(pick(['ah', 'oo', 'chord']), near.u, near.v, true, grid(ac.currentTime + .02, BEAT / 2));
       } else if (realHit) {
         addRing(realHit.u, realHit.v, 'real', { str: .6 });
       } else if (ghosts.length < 40) {  // pointing at nothing creates something
@@ -376,34 +505,48 @@
       kb.u = clamp(kb.u + du / A, .02, .98); kb.v = clamp(kb.v + dv, .03, .97);
     } else if (k === 'Enter' || k === ' ') { e.preventDefault(); kb.on = true; click(kb.u, kb.v); }
   });
-  $('#go-snd').addEventListener('click', () => start(true));
+  $('#go-snd').addEventListener('click', openCheck);
   $('#go-mute').addEventListener('click', () => start(false));
+  $('#k-go').addEventListener('click', () => start(true));
+  $('#k-again').addEventListener('click', runCheck);
   $('#again').addEventListener('click', () => { cv.focus({ preventScroll: true }); reset(); });
   sndBtn.addEventListener('click', () => setSound(!soundOn));
   addEventListener('resize', layout);
 
   // ------------------------------------------------------------------ update
+  const HINTS = [
+    [22, 'Every click is a sound on the take.'],
+    [38, 'The song only plays while you listen for it.'],
+    [55, 'Hold still.']
+  ];
   function update(dt) {
     gt += dt; stT += dt;
     if (stageNext > 0 && gt >= stageNext) { stageNext = -1; go(state === 'calibrate' ? 'phantoms' : state === 'phantoms' ? 'feedback' : state); }
 
     const recording = ['opening', 'calibrate', 'phantoms', 'feedback'].includes(state);
-    if (recording) { clock -= dt; if (clock <= 0) { if (state === 'feedback' && stT > 12) { go('ending'); } else { take++; clock = 30; } } }
+    if (recording) { clock -= dt; if (clock <= 0) { take++; clock = 30; } }
     if (ruinedT > 0) ruinedT -= dt;
 
     if (state === 'opening' && stT >= 3) go('calibrate');
 
-    if (state === 'calibrate' && cur && stT >= nextEmit) {
-      playReal(cur); emits++;
-      addRing(cur.u, cur.v, 'real', { delay: reduce ? 0 : .4, str: emits > 3 ? 1.6 : 1 });
-      nextEmit = stT + rand(3.1, 4.1);
+    if (state === 'calibrate') {
+      if (cur && stT >= nextEmit) {
+        playReal(cur); emits++;
+        addRing(cur.u, cur.v, 'real', { delay: reduce ? 0 : .4, str: emits > 3 ? 1.6 : 1 });
+        nextEmit = stT + rand(3.1, 4.1);
+      }
+      setGoal('Sources', found.size + ' / 4', found.size / 4);
     }
 
-    if (state === 'phantoms' && stT >= nextEmit && ghostsMade < 3) {
-      const last = rings.filter(r => r.kind === 'ph').pop();
-      let p; for (let i = 0; i < 6; i++) { p = freeFloor(); if (!last || dist(p, last) > .3) break; }
-      emitPhantom(p.u, p.v, false);
-      nextEmit = stT + rand(3.4, 4.6);
+    if (state === 'phantoms') {
+      if (stT >= nextEmit && ghostsMade < 3) {
+        const last = rings.filter(r => r.kind === 'ph').pop();
+        let p; for (let i = 0; i < 6; i++) { p = freeFloor(); if (!last || dist(p, last) > .3) break; }
+        emitPhantom(p.u, p.v, false);
+        nextEmit = stT + (ac ? BEAT * pick([4, 5, 6]) : rand(3.4, 4.6));
+      }
+      setGoal('Voices found', Math.min(3, ghostsMade) + ' / 3', Math.min(3, ghostsMade) / 3);
+      if (stT > 16 && ghostsMade === 0 && !lineEl.classList.contains('show')) say('Pink means no source. Click where the voice was.', true);
     }
 
     if (state === 'feedback') {
@@ -419,14 +562,22 @@
         if (idle > 2.5) g.life -= dt / g.decay;
       }
       for (let i = ghosts.length - 1; i >= 0; i--) if (ghosts[i].life <= 0) ghosts.splice(i, 1);
-      const n = ghosts.reduce((s, g) => s + g.life, 0);
-      if (ac) { setTarget(droneG.gain, Math.min(7, n * .45), .4); setTarget(fbGain.gain, Math.min(.34, n * .022), .4); }
-      // hint for players who never stop: the REC light slows down
-      const slow = clamp((stT - 45) / 40, 0, 1);
+      const n = loudness();
+      if (ac) {
+        setTarget(droneG.gain, Math.min(7, n * .45), .4); setTarget(fbGain.gain, Math.min(.34, n * .022), .4);
+        while (nextStep < ac.currentTime + .12) { bandStep(stepI++, nextStep); nextStep += BEAT / 2; }
+      }
+      // the goal: ten clean seconds. It only counts up while the player does nothing.
+      clean = clamp(Math.min(idle, stT - 6), 0, CLEAN_NEED);
+      bestClean = Math.max(bestClean, clean);
+      setGoal('Clean', clean.toFixed(1) + ' / ' + CLEAN_NEED.toFixed(1) + ' s', clean / CLEAN_NEED, ruinedT > 0 ? 'reset' : '');
+      // hints, only for players who have not found stillness yet
+      if (hintI < HINTS.length && stT > HINTS[hintI][0] && bestClean < 6) { say(HINTS[hintI][1], hintI === 2); hintI++; }
+      if (clean > 3 && lineEl.classList.contains('show') && hintI < 3) say('');
+      // the REC light slows down for players who never stop
+      const slow = clamp((stT - 30) / 40, 0, 1);
       recEl.querySelector('i').style.animationDuration = (1.6 + slow * 3.4) + 's';
-      if (stT > 85 && idle > 1 && !lineEl.classList.contains('show')) say('Hold still.', true);
-      if (idle < .5 && lineEl.classList.contains('show')) say('');
-      if (idle >= 10 && stT >= 18) go('ending');
+      if (clean >= CLEAN_NEED) go('ending');
     }
 
     if (state === 'ending') {
@@ -450,8 +601,8 @@
 
     // level meter (from game state, so it works with sound off too)
     let target = .12;
-    for (const r of rings) if (r.t > 0) target += r.kind === 'real' ? .32 * Math.max(0, 1 - r.t / 1.2) : .22 * Math.max(0, 1 - r.t / 2);
-    if (state === 'feedback') target += ghosts.reduce((s, g) => s + g.life, 0) * .032;
+    for (const r of rings) if (r.t > 0) target += r.kind === 'real' ? .32 * Math.max(0, 1 - r.t / 1.2) : (r.small ? .1 : .22) * Math.max(0, 1 - r.t / 2);
+    if (state === 'feedback') target += loudness() * .032;
     if (state === 'ending' || state === 'credits') target = .1 + (playP > 0 && playP < 1 ? .04 * Math.random() : 0);
     target = clamp(target, 0, 1);
     lvl += (target - lvl) * (target > lvl ? .45 : .05);
@@ -564,11 +715,11 @@
           ctx.beginPath(); ctx.arc(x, y, (r.big ? .03 + r.t * .16 : .02 + r.t * .085) * S + k * .03 * S, 0, Math.PI * 2); ctx.stroke();
         }
       } else {
-        const life = 2.8, a = Math.max(0, 1 - r.t / life) * (r.big ? .95 : .5) * ghostFade;
+        const life = 2.8, a = Math.max(0, 1 - r.t / life) * (r.big ? .95 : r.small ? .38 : .5) * ghostFade, sc = r.small ? .55 : 1;
         ctx.strokeStyle = C.ph; ctx.lineWidth = lw * (r.big ? 1.8 : 1.1); ctx.setLineDash([4 * lw, 5 * lw]);
         for (let k = 0; k < 3; k++) {
           ctx.globalAlpha = clamp(a - k * .2, 0, 1);
-          ctx.beginPath(); ctx.arc(x, y, (.02 + r.t * .07) * S + k * .035 * S, 0, Math.PI * 2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(x, y, ((.02 + r.t * .07) * S + k * .035 * S) * sc, 0, Math.PI * 2); ctx.stroke();
         }
         ctx.setLineDash([]);
       }
@@ -630,7 +781,7 @@
   // test hooks (used for automated playtests; harmless for players)
   window.RT = {
     get state() { return state; },
-    get info() { return { state, stT: +stT.toFixed(2), take, found: [...found], cur: cur && cur.id, emits, ghosts: ghosts.length, ghostsMade, lvl: +lvl.toFixed(2) }; },
+    get info() { return { state, stT: +stT.toFixed(2), clean: +clean.toFixed(2), loud: +loudness().toFixed(1), take, found: [...found], cur: cur && cur.id, emits, ghosts: ghosts.length, ghostsMade, lvl: +lvl.toFixed(2) }; },
     click, start,
     recentPhantom: () => { const r = rings.filter(r => r.kind === 'ph').pop(); return r && { u: r.u, v: r.v }; },
     ghost: () => ghosts[0] && { u: ghosts[0].u, v: ghosts[0].v },

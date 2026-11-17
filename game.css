@@ -122,3 +122,34 @@ table.ev td:first-child { font: 500 12px/1.6 var(--mono); color: var(--accent); 
 .play-cta b { font: 700 28px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; color: var(--real); }
 .play-cta:hover { background: var(--real); }
 .play-cta:hover span, .play-cta:hover b { color: var(--bg); }
+
+/* ---------- final page (Week 3) ---------- */
+.cta-row { display: flex; flex-wrap: wrap; align-items: end; gap: 18px 28px; }
+.text-link { font: 500 12px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding-bottom: 14px; }
+.text-link:hover { color: var(--ink); }
+.shot-link { display: block; border: 1px solid var(--line); }
+.shot-link img { width: 100%; }
+figure { margin: 0; }
+figure figcaption { margin-top: 10px; font-size: 14px; color: var(--muted); }
+figure figcaption b { color: var(--ink); font-weight: 500; }
+table.fb td:first-child { width: 110px; font: 500 12px/1.6 var(--mono); color: var(--accent); }
+table.fb td:last-child { color: var(--ink); }
+.changes { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .changes { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .changes { grid-template-columns: repeat(3, 1fr); } }
+.ch { border: 1px solid var(--line); background: var(--bg-2); padding: 18px; }
+.ch .label { color: var(--accent); }
+.ch h4 { font: 700 22px/1.1 var(--display); text-transform: uppercase; margin: 10px 0 8px; }
+.ch p { margin: 0; color: var(--ink-2); font-size: 15px; }
+.ch.muted { background: transparent; border-style: dashed; }
+.ch.muted .label { color: var(--muted); }
+.compare { display: grid; gap: 22px 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .compare { grid-template-columns: 1fr 1fr; } }
+.compare img { width: 100%; border: 1px solid var(--line); }
+.split { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .split { grid-template-columns: 1fr 1fr; } }
+.split > div { border: 1px solid var(--line); padding: 18px 20px; }
+.split > div:last-child { border-color: var(--accent); }
+.split ul { margin: 12px 0 0; padding-left: 18px; color: var(--ink-2); }
+.split li { margin: 0 0 10px; }
+.facts dd a { color: var(--accent); }

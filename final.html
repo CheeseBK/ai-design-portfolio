@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Room Tone — Final Game &amp; Process Note · Ran Chen</title>
+  <meta name="description" content="Room Tone, a small web game about auditory hallucination: the finished game and a short process note on the feedback, revisions and AI assistance behind it.">
+  <meta property="og:title" content="Room Tone — Final Game &amp; Process Note">
+  <meta property="og:description" content="A web game about listening too hard. After nine hours on one song, record thirty seconds of an empty room.">
+  <meta property="og:image" content="https://cheesebk.github.io/ai-design-portfolio/assets/game/process/w3-stage3.webp">
+  <meta property="og:url" content="https://cheesebk.github.io/ai-design-portfolio/final.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="home" href="index.html">Ran Chen</a>
+    <ul>
+      <li><a href="cover.html">−0</a></li>
+      <li><a href="studio.html">Punk Radio</a></li>
+      <li><a href="final.html" aria-current="page">Room Tone</a></li>
+    </ul>
+  </header>
+
+  <main class="wrap">
+    <section class="p-head" id="top">
+      <div class="kicker">Project 03 · Web game · Final · Theme: Hallucination</div>
+      <h1>Room Tone</h1>
+      <p class="sub">A game about listening too hard. After nine hours recording one song, you have to record thirty seconds of an empty room — but your ears keep playing the song.</p>
+      <div class="cta-row">
+        <a class="play-cta" href="play.html"><span>Headphones on · 3–4 minutes · click or tap</span><b>Play Room Tone →</b></a>
+        <a class="text-link" href="#process">Read the process note ↓</a>
+      </div>
+    </section>
+
+    <figure>
+      <a class="shot-link" href="play.html"><img src="assets/game/process/w3-stage3.webp" alt="Room Tone, stage 3: a top-down plan of a studio live room filling with dashed pink phantom microphones. The HUD shows stage 03 of 03, a clean-take meter and the hint 'Every click is a sound on the take.'" width="1200" height="750"></a>
+      <figcaption><b>Stage 3, Feedback.</b> Every click adds another voice of the song. The clean-take meter (top left) only rises while you do nothing.</figcaption>
+    </figure>
+
+    <dl class="facts">
+      <div><dt>Theme</dt><dd>Hallucination — auditory, as a recording engineer knows it</dd></div>
+      <div><dt>Interaction</dt><dd>One input: click where you hear something</dd></div>
+      <div><dt>Structure</dt><dd>Sound check · opening · 3 stages · ending</dd></div>
+      <div><dt>Built with</dt><dd>HTML Canvas, Web Audio API · no libraries</dd></div>
+      <div><dt>Designer</dt><dd>Ran Chen — concept, sound, design</dd></div>
+      <div><dt>Also</dt><dd><a href="game.html">Week 1 proposal</a> · <a href="play-w2.html">Week 2 draft (playable)</a></dd></div>
+    </dl>
+
+    <div class="decision"><span class="label">The idea, in one line</span><p>Attention is the instrument. The phantoms are the song from tonight's session; every time you reach for them, the song gets louder. The only way to a clean take is to stop listening for it.</p></div>
+
+    <!-- PROCESS NOTE -->
+    <section class="sec" id="process">
+      <div class="sec-h"><span class="n">01</span><h2>What I focused on</h2></div>
+      <p>Four people played the Week 2 draft without me explaining it. Their comments pointed at the same two problems: the idea was not visible inside the game, and players could not tell what they were working toward.</p>
+      <div class="tablewrap">
+        <table class="ev fb">
+          <thead><tr><th>Who</th><th>What they said or did</th><th>What it told me</th></tr></thead>
+          <tbody>
+            <tr><td>Prof. Zhang</td><td>Enjoyed the musical interactions, but the overall concept was still unclear. Asked what idea the player explores through the sounds they make, and to make it explicit in the experience.</td><td>The concept lived on the proposal page, not in the game.</td></tr>
+            <tr><td>Fandi</td><td>Liked that the room became overwhelming and made her unsure what she heard — but had <em>“not figured it out yet.”</em></td><td>Nobody discovered that stopping is the way out. The 85-second hint was far too late.</td></tr>
+            <tr><td>Fatimah</td><td>Noticed every click made more sounds and shapes appear; asked for progression or a goal, “rather than just clicking.”</td><td>Stage 3 needed a visible goal and a measure of progress.</td></tr>
+            <tr><td>Criss</td><td>Suggested a test sound before starting, to check volume and left/right; and moving sounds or echoes as it gets harder.</td><td>Position is the whole game — players need to trust their headphones first.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="changes">
+      <div class="sec-h"><span class="n">02</span><h2>What I changed</h2></div>
+      <div class="changes">
+        <div class="ch"><span class="label">Concept · Prof. Zhang</span><h4>The phantoms became one song</h4><p>In Week 2 phantoms were random fragments. Now they are the song recorded that night — one melody in D minor at 76 BPM, locked to a beat grid. A few clicks bring back the vocal line; more add piano chords; a crowded room starts a drummer and a bass that are not there. Stillness takes the song apart layer by layer. The player is composing the hallucination without knowing it.</p></div>
+        <div class="ch"><span class="label">Goal · Fatimah, Fandi</span><h4>A clean-take meter</h4><p>Stage 3 now states its goal — ten seconds of the empty room — and shows a CLEAN meter that only rises while you do nothing and turns pink when a click resets it. Players still try to “fix” the room by clicking at first; the meter shows them, without words, what actually works.</p></div>
+        <div class="ch"><span class="label">Guidance · Fandi</span><h4>Stage titles and earlier hints</h4><p>Each stage opens with a short title card and a one-line goal, and a stage label stays on screen. Hints arrive at 22, 38 and 55 seconds instead of 85, and only for players who have not found stillness yet.</p></div>
+        <div class="ch"><span class="label">Sound · Criss</span><h4>A talkback check</h4><p>“Start with sound” now opens a sound check: one tone left, one right, with L/R lights. It doubles as a lesson in the game's only skill — hearing where a sound is.</p></div>
+        <div class="ch"><span class="label">Meaning · Prof. Zhang</span><h4>An ending that says what happened</h4><p>The credits now show the player's own run — phantoms created, takes ruined, time in the room — and two short paragraphs that name the idea: nobody was singing, and you were the one composing it.</p></div>
+        <div class="ch muted"><span class="label">Considered, not adopted</span><h4>Moving sounds</h4><p>Criss suggested sounds that move. I kept every source still, because locating them is the skill the game teaches. Escalation now comes from the song's layers and the reverb feedback loop instead.</p></div>
+      </div>
+
+      <h3>Before and after</h3>
+      <div class="compare">
+        <figure><img src="assets/game/process/w2-stage3.webp" alt="Week 2 stage 3: the room full of phantom microphones with no goal, stage label or hint on screen." width="1200" height="750" loading="lazy"><figcaption><b>Week 2 · Stage 3.</b> No goal, no stage, no hint. Only a take counter.</figcaption></figure>
+        <figure><img src="assets/game/process/w3-stage3.webp" alt="Week 3 stage 3: stage label 03 of 03, a clean-take meter and a hint line." width="1200" height="750" loading="lazy"><figcaption><b>Week 3 · Stage 3.</b> Stage label, CLEAN meter, hint at 22 s.</figcaption></figure>
+        <figure><img src="assets/game/process/w2-ending.webp" alt="Week 2 ending: a credits card with a work-in-progress note." width="1200" height="750" loading="lazy"><figcaption><b>Week 2 · Ending.</b> Credits and a one-line idea.</figcaption></figure>
+        <figure><img src="assets/game/process/w3-ending.webp" alt="Week 3 ending: the player's stats and a short explanation of what happened." width="1200" height="750" loading="lazy"><figcaption><b>Week 3 · Ending.</b> Your run, and what it meant.</figcaption></figure>
+        <figure><img src="assets/game/process/w3-check.webp" alt="New sound check screen with left and right indicators." width="1200" height="750" loading="lazy"><figcaption><b>New · Sound check.</b> Left, then right.</figcaption></figure>
+        <figure><img src="assets/game/process/w3-intertitle.webp" alt="New stage title card: 01 of 03, Calibrate. Every sound in this room has a source. Find all four." width="1200" height="750" loading="lazy"><figcaption><b>New · Stage titles.</b> One goal per stage.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sec" id="ai">
+      <div class="sec-h"><span class="n">03</span><h2>AI tools &amp; my decisions</h2></div>
+      <div class="split">
+        <div><span class="label">AI assistance · Claude</span>
+          <ul>
+            <li>Week 1: research partner on the case study; I checked its claims and corrected its reading of <i>Loneliness</i>.</li>
+            <li>Week 3: collected the instructor and classmate comments from Canvas, proposed revisions that answer each one, wrote the code changes, and ran automated playthroughs in a headless browser to check every stage on desktop and phone.</li>
+            <li>All sounds are synthesized in the browser with Web Audio — no AI-generated audio.</li>
+          </ul>
+        </div>
+        <div><span class="label">My decisions</span>
+          <ul>
+            <li>The concept: auditory hallucination from my own experience as a recording engineer — hearing voices in a noise floor after a long session.</li>
+            <li>One input only, and inverting <i>Loneliness</i>: there attention erases others, here it creates them.</li>
+            <li>Answering “make the concept clearer” with music, not more text: the phantoms became the session's song, and the player composes it by reaching for it.</li>
+            <li>Keeping the exit undiscovered but visible: the goal is stated, the solution is not.</li>
+            <li>Which feedback to adopt and which to decline (moving sounds).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <nav class="next">
+      <a class="back" href="index.html">← All projects</a>
+      <a class="big" href="play.html">Play Room Tone →</a>
+    </nav>
+  </main>
+
+  <footer class="wrap site">
+    <span>Ran Chen · DSC 494 · Fall 2026</span>
+    <a href="mailto:chenran0109@gmail.com">chenran0109@gmail.com</a>
+  </footer>
+</body>
+</html>

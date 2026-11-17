@@ -105,3 +105,51 @@ body.play { overflow: hidden; height: 100vh; height: 100dvh; }
   .hud-top a { display: none; }
   .ov .kicker { font-size: 10px; }
 }
+
+/* ---------- Week 3: stage, goal, intertitles, sound check, reveal ---------- */
+.hud-left { position: absolute; left: max(18px, env(safe-area-inset-left)); top: 16px; display: grid; gap: 10px; pointer-events: none; }
+.hud-left .hud-rec { position: static; }
+.goal { display: grid; grid-template-columns: auto auto; justify-content: start; column-gap: 10px; row-gap: 6px; align-items: baseline;
+  font: 500 11px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); transition: opacity .6s; }
+.goal[hidden] { display: none; }
+.goal b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+.goal i { grid-column: 1 / -1; display: block; width: 168px; height: 3px; background: rgba(220, 235, 255, .1); position: relative; }
+.goal s { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); text-decoration: none; transition: width .25s linear; }
+.goal.reset s { background: var(--hot); }
+.goal.done b { color: var(--accent); }
+
+.stage { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); pointer-events: none;
+  font: 500 11px/1.4 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; transition: opacity .8s; }
+.stage b { color: var(--ink-2); font-weight: 500; }
+
+.inter { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, calc(100vw - 48px));
+  padding: 28px 32px; background: rgba(7, 9, 12, .86); border: 1px solid var(--line-2); pointer-events: none;
+  opacity: 0; transition: opacity .9s; }
+.inter.show { opacity: 1; }
+.inter .n { font: 500 12px/1 var(--mono); letter-spacing: .2em; color: var(--accent); }
+.inter.ph .n { color: var(--hot); }
+.inter h2 { font: 700 clamp(40px, 7vw, 72px)/.95 var(--display); text-transform: uppercase; margin: 10px 0 12px; }
+.inter p { margin: 0; color: var(--ink-2); font-size: clamp(15px, 1.8vw, 18px); line-height: 1.5; }
+
+.ov .sub2 { margin: -6px 0 18px; color: var(--hot); font: 500 12px/1.5 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.check .lead b { color: var(--accent); font-weight: 500; }
+.lr { display: flex; align-items: center; gap: 14px; margin: 6px 0 22px; }
+.lr span { width: 56px; height: 56px; display: grid; place-items: center; border: 1px solid var(--line-2);
+  font: 700 26px/1 var(--display); color: var(--muted); transition: all .15s; }
+.lr span.on { border-color: var(--accent); color: var(--bg); background: var(--accent); box-shadow: 0 0 18px rgba(143, 194, 255, .5); }
+.lr i { flex: 1; max-width: 160px; height: 1px; background: var(--line-2); }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 4px 0 20px; }
+.stats dt { font: 500 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.stats dd { margin: 4px 0 0; font: 700 34px/1 var(--display); color: var(--ink); }
+.reveal { border-left: 2px solid var(--hot); padding: 2px 0 2px 16px; margin: 0 0 6px; }
+.reveal p { margin: 0 0 10px; font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+.reveal b { color: var(--ink); font-weight: 500; }
+.credits .card { padding: 24px 0; }
+
+@media (max-width: 560px) {
+  .stage { top: auto; bottom: 18px; }
+  .goal i { width: 120px; }
+  .stats dd { font-size: 26px; }
+  .inter { padding: 20px; }
+}
