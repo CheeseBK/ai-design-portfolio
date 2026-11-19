@@ -153,3 +153,8 @@ table.fb td:last-child { color: var(--ink); }
 .split ul { margin: 12px 0 0; padding-left: 18px; color: var(--ink-2); }
 .split li { margin: 0 0 10px; }
 .facts dd a { color: var(--accent); }
+.quote { font: 700 clamp(22px, 2.6vw, 32px)/1.2 var(--display); text-transform: uppercase; letter-spacing: .01em; color: var(--ink); max-width: 30ch; margin: 36px 0 0; }
+.quote span { display: block; margin-top: 8px; font: 500 11px/1.4 var(--mono); letter-spacing: .16em; color: var(--muted); }
+.refnote { font-size: 13px; color: var(--muted); margin-top: 24px; }
+.refnote a { color: var(--accent); }
+table.fb td:first-child { white-space: nowrap; }
